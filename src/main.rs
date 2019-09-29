@@ -1,18 +1,18 @@
 fn main() {
+    // 1つの数字
     let s = {
         let mut s = String::new();
         std::io::stdin().read_line(&mut s).unwrap();
         s.trim_right().to_owned()
     };
-
     let a: usize = s.parse().unwrap();
 
+    // 複数数字
     let s = {
         let mut s = String::new();
         std::io::stdin().read_line(&mut s).unwrap();
         s.trim_right().to_owned()
     };
-
     let (b, c) = {
         let mut ws = s.split_whitespace();
         let b: usize = ws.next().unwrap().parse().unwrap();
@@ -20,6 +20,7 @@ fn main() {
         (b, c)
     };
 
+    // 1行ベクトル
     let s = {
         let mut s = String::new();
         std::io::stdin().read_line(&mut s).unwrap();
@@ -27,6 +28,7 @@ fn main() {
     };
     let v: Vec<usize> = s.split_whitespace().map(|x| x.parse().unwrap()).collect();
 
+    // 複数行ベクトル
     let mut v: Vec<i64> = Vec::new();
     for _ in 0..a {
         let s = {
@@ -34,7 +36,7 @@ fn main() {
             std::io::stdin().read_line(&mut s).unwrap();
             s.trim_right().to_owned()
         };
-        let a_i: i64 = s.parse().unwrap();
-        v.push(a_i)
+        let v_i: i64 = s.parse().unwrap();
+        v.push(v_i)
     }
 }
