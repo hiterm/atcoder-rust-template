@@ -27,5 +27,14 @@ fn main() {
     };
     let v: Vec<usize> = s.split_whitespace().map(|x| x.parse().unwrap()).collect();
 
-    println!("{} {}", a + b + c, s);
+    let mut v: Vec<i64> = Vec::new();
+    for _ in 0..a {
+        let s = {
+            let mut s = String::new();
+            std::io::stdin().read_line(&mut s).unwrap();
+            s.trim_right().to_owned()
+        };
+        let a_i: i64 = s.parse().unwrap();
+        v.push(a_i)
+    }
 }
