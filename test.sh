@@ -11,8 +11,10 @@ for i in {01..99}; do
 
   if [ -z "$STDERR_FLAG" ]; then
     ACTUAL=`cargo run < test/i${i}.txt 2>/dev/null`
+    EXIT_CODE=$?
   else
     ACTUAL=`cargo run < test/i${i}.txt`
+    EXIT_CODE=$?
   fi
   EXPECTED=`cat test/o${i}.txt`
 
@@ -20,7 +22,12 @@ for i in {01..99}; do
   echo "actual:   $ACTUAL"
 
   if [ "$ACTUAL" = "$EXPECTED" ]; then
-    echo OK
+    if [ $EXIT_CODE -eq 0 ]; then
+      echo OK
+    else
+      echo "exit code: $EXIT_CODE"
+      echo NG
+    fi
   else
     echo NG
   fi
