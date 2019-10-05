@@ -1,3 +1,14 @@
+use std::io::Write;
+
+#[allow(unused)]
+macro_rules! debug {
+    ($($format:tt)*) => (write!(std::io::stderr(), $($format)*).unwrap());
+}
+#[allow(unused)]
+macro_rules! debugln {
+    ($($format:tt)*) => (writeln!(std::io::stderr(), $($format)*).unwrap());
+}
+
 fn main() {
     // 1つの数字
     let s = {
