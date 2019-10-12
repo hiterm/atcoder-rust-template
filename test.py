@@ -3,24 +3,24 @@
 import sys
 from pathlib import Path
 import subprocess
+import re
 
-stderr_flag = (len(sys.argv) >= 2 and sys.argv[1] == "-v")
-
-for file in sorted(Path('cases/in').iterdir()):
-    if not file.is_file():
-        continue
-
-    infile_path = file
-    outfile_path = Path('cases/out') / file.name
+def run_case(case, flag_stderr):
+    if re.match(r'.*\.txt', case):
+        infile_path = Path('cases/in') / case
+        outfile_path = Path('cases/out') / case
+    else:
+        infile_path = Path('cases/in') / (case + '.txt')
+        outfile_path = Path('cases/out') / (case + '.txt')
 
     if not outfile_path.exists():
         print('{} not found.'.format(outfile_path))
-        continue
+        return
 
     # run cases
     infile = infile_path.open()
     try:
-        if stderr_flag:
+        if flag_stderr:
             result = subprocess.run(['cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, timeout=3)
         else:
             result = subprocess.run(['cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3)
@@ -28,7 +28,7 @@ for file in sorted(Path('cases/in').iterdir()):
     except subprocess.TimeoutExpired:
         print("{}: NG".format(infile_path.name))
         print("TLE")
-        continue
+        return
 
     expected = outfile_path.open().read().rstrip()
 
@@ -42,3 +42,37 @@ for file in sorted(Path('cases/in').iterdir()):
         print("{}: NG".format(infile_path.name))
     print('EXPECTED: "{}"'.format(expected))
     print('ACTUAL:   "{}"'.format(actual))
+
+def run_all(flag_stderr):
+    for file in sorted(Path('cases/in').iterdir()):
+        if not file.is_file():
+            continue
+
+        # TODO 拡張子を外す？
+        run_case(file.name, flag_stderr)
+
+
+def run_selected(cases, flag_stderr):
+    for case in cases:
+        run_case(case, flag_stderr)
+
+
+flag_stderr = False
+flag_all = True
+cases = []
+if len(sys.argv) <= 1:
+    pass
+elif len(sys.argv) == 2 and sys.argv[1] == '-v':
+    flag_stderr = True
+else:
+    flag_all = False
+    for arg in sys.argv[1:]:
+        if arg == '-v':
+            flag_stderr = True
+        else:
+            cases.append(arg)
+
+if flag_all:
+    run_all(flag_stderr)
+else:
+    run_selected(cases, flag_stderr)
