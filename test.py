@@ -6,6 +6,16 @@ import subprocess
 import re
 
 def run_case(case, flag_stderr):
+    """
+    Run one case.
+
+    Parameters
+    ----------
+    case : str
+        Case name. Both '01.txt' and '01' are accepted.
+    flag_stderr : bool
+        flag for show stderr
+    """
     if re.match(r'.*\.txt', case):
         infile_path = Path('cases/in') / case
         outfile_path = Path('cases/out') / case
@@ -44,15 +54,32 @@ def run_case(case, flag_stderr):
     print('ACTUAL:   "{}"'.format(actual))
 
 def run_all(flag_stderr):
+    """
+    Run all cases.
+
+    Parameters
+    ----------
+    flag_stderr : bool
+        flag for show stderr
+    """
     for file in sorted(Path('cases/in').iterdir()):
         if not file.is_file():
             continue
 
-        # TODO 拡張子を外す？
         run_case(file.name, flag_stderr)
 
 
 def run_selected(cases, flag_stderr):
+    """
+    Run selected cases.
+
+    Parameters
+    ----------
+    case : str[]
+        list of cases
+    flag_stderr : bool
+        flag for show stderr
+    """
     for case in cases:
         run_case(case, flag_stderr)
 
