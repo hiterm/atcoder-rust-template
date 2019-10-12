@@ -1,4 +1,4 @@
-#1/bin/python
+#!/bin/python
 
 import sys
 from pathlib import Path
@@ -19,11 +19,16 @@ for file in Path('cases/in').iterdir():
 
     # run cases
     infile = infile_path.open()
-    if stderr_flag:
-        result = subprocess.run(['cargo', 'run'], stdin=infile, stdout=subprocess.PIPE)
-    else:
-        result = subprocess.run(['cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-    actual = result.stdout.decode().rstrip()
+    try:
+        if stderr_flag:
+            result = subprocess.run(['cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, timeout=3)
+        else:
+            result = subprocess.run(['cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3)
+        actual = result.stdout.decode().rstrip()
+    except subprocess.TimeoutExpired:
+        print("{}: NG".format(infile_path.name))
+        print("TLE")
+        continue
 
     expected = outfile_path.open().read().rstrip()
 
