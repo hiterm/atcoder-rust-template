@@ -14,6 +14,3 @@ for subdir in a b c d e f; do
 done
 
 cd $DIRNAME
-git init
-git add -A
-git commit -m "First commit"
