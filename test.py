@@ -6,7 +6,7 @@ import subprocess
 
 stderr_flag = (len(sys.argv) >= 2 and sys.argv[1] == "-v")
 
-for file in Path('cases/in').iterdir():
+for file in sorted(Path('cases/in').iterdir()):
     if not file.is_file():
         continue
 
