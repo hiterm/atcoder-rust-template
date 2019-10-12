@@ -4,19 +4,22 @@ if [ "$1" = "-v" ]; then
   STDERR_FLAG=1
 fi
 
-for i in {01..99}; do
-  if [ ! -f test/i${i}.txt ]; then
+for file in $(ls cases/in); do
+  infile="cases/in/$file"
+  outfile="cases/out/$file"
+  if [ ! -f "$outfile" ]; then
+    echo "$outfile not found"
     exit
   fi
 
   if [ -z "$STDERR_FLAG" ]; then
-    ACTUAL=`cargo run < test/i${i}.txt 2>/dev/null`
+    ACTUAL=`cargo run < $infile 2>/dev/null`
     EXIT_CODE=$?
   else
-    ACTUAL=`cargo run < test/i${i}.txt`
+    ACTUAL=`cargo run < $infile`
     EXIT_CODE=$?
   fi
-  EXPECTED=`cat test/o${i}.txt`
+  EXPECTED=`cat $outfile`
 
   echo "expected: $EXPECTED"
   echo "actual:   $ACTUAL"
