@@ -21,9 +21,7 @@ for file in $(ls cases/in); do
   fi
   EXPECTED=`cat $outfile`
 
-  echo "expected: $EXPECTED"
-  echo "actual:   $ACTUAL"
-
+  echo -n "$file: "
   if [ "$ACTUAL" = "$EXPECTED" ]; then
     if [ $EXIT_CODE -eq 0 ]; then
       echo OK
@@ -34,4 +32,7 @@ for file in $(ls cases/in); do
   else
     echo NG
   fi
+
+  echo "expected: $EXPECTED"
+  echo "actual:   $ACTUAL"
 done
