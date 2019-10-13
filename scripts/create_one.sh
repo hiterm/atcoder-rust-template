@@ -8,3 +8,4 @@ fi
 DIR=$1
 mkdir $DIR
 cp -r template/* $DIR
+cp -r template/.gitignore $DIR
