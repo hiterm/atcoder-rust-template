@@ -9,43 +9,41 @@ macro_rules! debugln {
 
 fn main() {
     // 1つの数字
-    let s = {
+    let a: usize =  {
         let mut s = String::new();
         std::io::stdin().read_line(&mut s).unwrap();
-        s.trim_right().to_owned()
+        let s = s.trim_right().to_owned();
+        s.parse().unwrap()
     };
-    let a: usize = s.parse().unwrap();
 
     // 複数数字
-    let s = {
+    let (a, b) = {
         let mut s = String::new();
         std::io::stdin().read_line(&mut s).unwrap();
-        s.trim_right().to_owned()
-    };
-    let (b, c) = {
+        let s = s.trim_right().to_owned();
         let mut ws = s.split_whitespace();
+        let a: usize = ws.next().unwrap().parse().unwrap();
         let b: usize = ws.next().unwrap().parse().unwrap();
-        let c: usize = ws.next().unwrap().parse().unwrap();
-        (b, c)
+        (a, b)
     };
 
     // 1行ベクトル
-    let s = {
+    let v: Vec<usize> = {
         let mut s = String::new();
         std::io::stdin().read_line(&mut s).unwrap();
-        s.trim_right().to_owned()
+        let s = s.trim_right().to_owned();
+        s.split_whitespace().map(|x| x.parse().unwrap()).collect()
     };
-    let v: Vec<usize> = s.split_whitespace().map(|x| x.parse().unwrap()).collect();
 
     // 複数行ベクトル
     let mut v: Vec<i64> = Vec::new();
     for _ in 0..a {
-        let s = {
+        let v_i = {
             let mut s = String::new();
             std::io::stdin().read_line(&mut s).unwrap();
-            s.trim_right().to_owned()
+            let s = s.trim_right().to_owned();
+            s.parse().unwrap()
         };
-        let v_i: i64 = s.parse().unwrap();
         v.push(v_i)
     }
 }
