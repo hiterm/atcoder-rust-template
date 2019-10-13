@@ -1,5 +1,3 @@
-use std::io::Write;
-
 #[allow(unused)]
 macro_rules! debug {
     ($($format:tt)*) => (write!(std::io::stderr(), $($format)*).unwrap());
