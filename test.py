@@ -5,6 +5,10 @@ from pathlib import Path
 import subprocess
 import re
 
+// TODO inputも出力する
+// -vvとかでverbose levelを設定？
+// 最後に間違ったやつの一覧
+
 def run_case(case, flag_stderr):
     """
     Run one case.
