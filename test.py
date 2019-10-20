@@ -5,9 +5,8 @@ from pathlib import Path
 import subprocess
 import re
 
-// TODO inputも出力する
-// -vvとかでverbose levelを設定？
-// 最後に間違ったやつの一覧
+# TODO -vvとかでverbose levelを設定？
+# 最後に間違ったやつの一覧
 
 def run_case(case, flag_stderr):
     """
@@ -31,7 +30,7 @@ def run_case(case, flag_stderr):
         print('{} not found.'.format(outfile_path))
         return
 
-    # run cases
+    # run case
     infile = infile_path.open()
     try:
         if flag_stderr:
@@ -54,6 +53,9 @@ def run_case(case, flag_stderr):
         print("{}: OK".format(infile_path.name))
     else:
         print("{}: NG".format(infile_path.name))
+
+    infile.seek(0)
+    print('INPUT:    \n{}'.format(infile.read().rstrip()))
     print('EXPECTED: "{}"'.format(expected))
     print('ACTUAL:   "{}"'.format(actual))
 
