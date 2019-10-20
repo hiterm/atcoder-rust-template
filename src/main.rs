@@ -17,13 +17,13 @@ fn main() {
     };
 
     // 複数数字
-    let (a, b) = {
+    let (a, b): (usize, usize) = {
         let mut s = String::new();
         std::io::stdin().read_line(&mut s).unwrap();
         let s = s.trim_right().to_owned();
         let mut ws = s.split_whitespace();
-        let a: usize = ws.next().unwrap().parse().unwrap();
-        let b: usize = ws.next().unwrap().parse().unwrap();
+        let a = ws.next().unwrap().parse().unwrap();
+        let b = ws.next().unwrap().parse().unwrap();
         (a, b)
     };
 
@@ -36,7 +36,7 @@ fn main() {
     };
 
     // 複数行ベクトル
-    let mut v: Vec<i64> = Vec::new();
+    let mut v: Vec<usize> = Vec::new();
     for _ in 0..a {
         let v_i = {
             let mut s = String::new();
