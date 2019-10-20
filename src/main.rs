@@ -9,7 +9,7 @@ macro_rules! debugln {
 
 fn main() {
     // 1つの数字
-    let a: usize =  {
+    let a: usize = {
         let mut s = String::new();
         std::io::stdin().read_line(&mut s).unwrap();
         let s = s.trim_right().to_owned();
