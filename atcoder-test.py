@@ -87,8 +87,7 @@ def run_all(flag_stderr):
             ng_cases.append(file.name)
         print()
 
-    for case in ng_cases:
-        print("NG cases: {}".format(ng_cases.join(" ")))
+    print("NG cases: \n{}".format(" ".join(ng_cases)))
 
 
 def run_selected(cases, flag_stderr):
@@ -109,8 +108,7 @@ def run_selected(cases, flag_stderr):
             ng_cases.append(case)
         print()
 
-    for case in ng_cases:
-        print("NG cases: {}".format(ng_cases.join(" ")))
+    print("NG cases: \n{}".format(" ".join(ng_cases)))
 
 
 flag_stderr = False
