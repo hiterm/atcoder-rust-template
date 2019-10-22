@@ -78,12 +78,17 @@ def run_all(flag_stderr):
     flag_stderr : bool
         flag for show stderr
     """
+    ng_cases = []
     for file in sorted(Path('cases/in').iterdir()):
         if not file.is_file():
             continue
 
-        run_case(file.name, flag_stderr)
+        if not run_case(file.name, flag_stderr):
+            ng_cases.append(file.name)
         print()
+
+    for case in ng_cases:
+        print("NG cases: {}".format(ng_cases.join(" ")))
 
 
 def run_selected(cases, flag_stderr):
@@ -97,9 +102,15 @@ def run_selected(cases, flag_stderr):
     flag_stderr : bool
         flag for show stderr
     """
+
+    ng_cases = []
     for case in cases:
-        run_case(case, flag_stderr)
+        if not run_case(case, flag_stderr):
+            ng_cases.append(case)
         print()
+
+    for case in ng_cases:
+        print("NG cases: {}".format(ng_cases.join(" ")))
 
 
 flag_stderr = False
