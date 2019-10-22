@@ -18,6 +18,11 @@ def run_case(case, flag_stderr):
         Case name. Both '01.txt' and '01' are accepted.
     flag_stderr : bool
         flag for show stderr
+
+    Returns
+    -------
+    accepted : bool
+        whether accepted or not
     """
     if re.match(r'.*\.txt', case):
         infile_path = Path('cases/in') / case
@@ -28,7 +33,7 @@ def run_case(case, flag_stderr):
 
     if not outfile_path.exists():
         print('{} not found.'.format(outfile_path))
-        return
+        return False
 
     # run case
     infile = infile_path.open()
@@ -39,25 +44,30 @@ def run_case(case, flag_stderr):
             result = subprocess.run(['cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3)
         actual = result.stdout.decode().rstrip()
     except subprocess.TimeoutExpired:
-        print("{}: NG".format(infile_path.name))
-        print("TLE")
-        return
+        print("{}: TLE".format(infile_path.name))
+        return False
 
     expected = outfile_path.open().read().rstrip()
 
     # check result
     if result.returncode != 0:
-        print("{}: NG".format(infile_path.name))
-        print("Exit code: {}".format(result.returncode))
+        accepted = False
+        result_type = "RE, Exit Code: {}".format(result.returncode)
     elif actual == expected:
-        print("{}: OK".format(infile_path.name))
+        accepted = True
+        result_type = "AC"
     else:
-        print("{}: NG".format(infile_path.name))
+        accepted = False
+        result_type = "WA"
+
+    print("{}: {}".format(infile_path.name, result_type))
 
     infile.seek(0)
     print('INPUT:    \n{}'.format(infile.read().rstrip()))
     print('EXPECTED: "{}"'.format(expected))
     print('ACTUAL:   "{}"'.format(actual))
+
+    return accepted
 
 def run_all(flag_stderr):
     """
@@ -73,6 +83,7 @@ def run_all(flag_stderr):
             continue
 
         run_case(file.name, flag_stderr)
+        print()
 
 
 def run_selected(cases, flag_stderr):
@@ -88,6 +99,7 @@ def run_selected(cases, flag_stderr):
     """
     for case in cases:
         run_case(case, flag_stderr)
+        print()
 
 
 flag_stderr = False
