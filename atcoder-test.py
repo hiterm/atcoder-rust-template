@@ -39,9 +39,9 @@ def run_case(case, flag_stderr):
     infile = infile_path.open()
     try:
         if flag_stderr:
-            result = subprocess.run(['cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, timeout=3)
+            result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, timeout=3)
         else:
-            result = subprocess.run(['cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3)
+            result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3)
         actual = result.stdout.decode().rstrip()
     except subprocess.TimeoutExpired:
         print("{}: TLE".format(infile_path.name))
