@@ -5,8 +5,7 @@ from pathlib import Path
 import subprocess
 import re
 import argparse
-
-# TODO -vvとかでverbose levelを設定？
+import os
 
 def run_case(case, verbose_level):
     """
@@ -38,10 +37,14 @@ def run_case(case, verbose_level):
     # run case
     infile = infile_path.open()
     try:
-        if verbose_level >= 1:
+        if verbose_level == 0:
+            result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3)
+        elif verbose_level == 1:
             result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, timeout=3)
         else:
-            result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3)
+            env = os.environ.copy()
+            env["RUST_BACKTRACE"] = "1"
+            result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, timeout=3, env = env)
         actual = result.stdout.decode().rstrip()
     except subprocess.TimeoutExpired:
         print("{}: TLE".format(infile_path.name))
