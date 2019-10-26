@@ -81,19 +81,8 @@ def run_all(verbose_level):
     verbose_level : int
         verbose level
     """
-    ng_cases = []
-    for file in sorted(Path('cases/in').iterdir()):
-        if not file.is_file():
-            continue
-
-        if not run_case(file.name, verbose_level):
-            ng_cases.append(file.name)
-        print()
-
-    if len(ng_cases) == 0:
-        print("AC")
-    else:
-        print("NG cases: \n{}".format(" ".join(ng_cases)))
+    cases = [file.name for file in sorted(Path('cases/in').iterdir()) if file.is_file()]
+    run_selected(cases, verbose_level)
 
 
 def run_selected(cases, verbose_level):
