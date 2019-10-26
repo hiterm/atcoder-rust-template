@@ -97,16 +97,22 @@ def run_selected(cases, verbose_level):
         verbose level
     """
 
+    ac_cases = []
     ng_cases = []
     for case in cases:
-        if not run_case(case, verbose_level):
+        if run_case(case, verbose_level):
+            ac_cases.append(case)
+        else:
             ng_cases.append(case)
         print()
+        print("--------------")
+        print()
+
+    print("AC cases: \n{}".format(" ".join(ac_cases)))
+    print("NG cases: \n{}".format(" ".join(ng_cases)))
 
     if len(ng_cases) == 0:
-        print("AC")
-    else:
-        print("NG cases: \n{}".format(" ".join(ng_cases)))
+        print("All AC")
 
 
 parser = argparse.ArgumentParser()
