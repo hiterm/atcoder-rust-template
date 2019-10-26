@@ -4,11 +4,11 @@ import sys
 from pathlib import Path
 import subprocess
 import re
+import argparse
 
 # TODO -vvとかでverbose levelを設定？
-# 最後に間違ったやつの一覧
 
-def run_case(case, flag_stderr):
+def run_case(case, verbose_level):
     """
     Run one case.
 
@@ -16,8 +16,8 @@ def run_case(case, flag_stderr):
     ----------
     case : str
         Case name. Both '01.txt' and '01' are accepted.
-    flag_stderr : bool
-        flag for show stderr
+    verbose_level : int
+        verbose level
 
     Returns
     -------
@@ -38,7 +38,7 @@ def run_case(case, flag_stderr):
     # run case
     infile = infile_path.open()
     try:
-        if flag_stderr:
+        if verbose_level >= 1:
             result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, timeout=3)
         else:
             result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3)
@@ -69,21 +69,21 @@ def run_case(case, flag_stderr):
 
     return accepted
 
-def run_all(flag_stderr):
+def run_all(verbose_level):
     """
     Run all cases.
 
     Parameters
     ----------
-    flag_stderr : bool
-        flag for show stderr
+    verbose_level : int
+        verbose level
     """
     ng_cases = []
     for file in sorted(Path('cases/in').iterdir()):
         if not file.is_file():
             continue
 
-        if not run_case(file.name, flag_stderr):
+        if not run_case(file.name, verbose_level):
             ng_cases.append(file.name)
         print()
 
@@ -93,7 +93,7 @@ def run_all(flag_stderr):
         print("NG cases: \n{}".format(" ".join(ng_cases)))
 
 
-def run_selected(cases, flag_stderr):
+def run_selected(cases, verbose_level):
     """
     Run selected cases.
 
@@ -101,13 +101,13 @@ def run_selected(cases, flag_stderr):
     ----------
     case : str[]
         list of cases
-    flag_stderr : bool
-        flag for show stderr
+    verbose_level : int
+        verbose level
     """
 
     ng_cases = []
     for case in cases:
-        if not run_case(case, flag_stderr):
+        if not run_case(case, verbose_level):
             ng_cases.append(case)
         print()
 
@@ -117,22 +117,13 @@ def run_selected(cases, flag_stderr):
         print("NG cases: \n{}".format(" ".join(ng_cases)))
 
 
-flag_stderr = False
-flag_all = True
-cases = []
-if len(sys.argv) <= 1:
-    pass
-elif len(sys.argv) == 2 and sys.argv[1] == '-v':
-    flag_stderr = True
-else:
-    flag_all = False
-    for arg in sys.argv[1:]:
-        if arg == '-v':
-            flag_stderr = True
-        else:
-            cases.append(arg)
+parser = argparse.ArgumentParser()
 
-if flag_all:
-    run_all(flag_stderr)
+parser.add_argument('cases', nargs='*')
+parser.add_argument('--verbose', '-v', nargs='?', type=int, const=1, default=0)
+args = parser.parse_args()
+
+if len(args.cases) == 0:
+    run_all(args.verbose)
 else:
-    run_selected(cases, flag_stderr)
+    run_selected(args.cases, args.verbose)
