@@ -125,3 +125,13 @@ if len(args.cases) == 0:
     run_all(args.verbose)
 else:
     run_selected(args.cases, args.verbose)
+
+# detect debug prints
+p1 = subprocess.Popen(['grep', 'debugln!', 'src/main.rs'], stdout=subprocess.PIPE)
+p2 = subprocess.Popen(['grep', '-v', '^ *//'], stdin = p1.stdout, stdout=subprocess.PIPE)
+p1.stdout.close()
+output = p2.communicate()[0].decode()
+if output != "":
+    print()
+    print("!!!!Please remove debug prints!!!!")
+    print(output)
