@@ -9,9 +9,5 @@ DIRNAME=$1
 
 mkdir $DIRNAME
 for subdir in a b c d e f; do
-  mkdir $DIRNAME/$subdir
-  cp -r template/* $DIRNAME/$subdir
-  cp -r template/.gitignore $DIRNAME/$subdir
+  ./create_one.sh $DIRNAME/$subdir
 done
-
-cd $DIRNAME
