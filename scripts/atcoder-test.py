@@ -1,13 +1,14 @@
 #!/bin/python
 
-import sys
 from pathlib import Path
 import subprocess
 import re
 import argparse
 import os
+from typing import List
 
-def run_case(case, verbose_level):
+
+def run_case(case: str, verbose_level: int) -> bool:
     """
     Run one case.
 
@@ -38,13 +39,23 @@ def run_case(case, verbose_level):
     infile = infile_path.open()
     try:
         if verbose_level == 0:
-            result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3)
+            result = subprocess.run(
+                ['rustup', 'run', '1.15.1', 'cargo', 'run'],
+                stdin=infile, stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL, timeout=3
+            )
         elif verbose_level == 1:
-            result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, timeout=3)
+            result = subprocess.run(
+                ['rustup', 'run', '1.15.1', 'cargo', 'run'],
+                stdin=infile, stdout=subprocess.PIPE, timeout=3
+            )
         else:
             env = os.environ.copy()
             env["RUST_BACKTRACE"] = "1"
-            result = subprocess.run(['rustup', 'run', '1.15.1', 'cargo', 'run'], stdin=infile, stdout=subprocess.PIPE, timeout=3, env = env)
+            result = subprocess.run(
+                ['rustup', 'run', '1.15.1', 'cargo', 'run'],
+                stdin=infile, stdout=subprocess.PIPE, timeout=3, env=env
+            )
         actual = result.stdout.decode().rstrip()
     except subprocess.TimeoutExpired:
         print("{}: TLE".format(infile_path.name))
@@ -72,7 +83,8 @@ def run_case(case, verbose_level):
 
     return accepted
 
-def run_all(verbose_level):
+
+def run_all(verbose_level: int) -> None:
     """
     Run all cases.
 
@@ -81,11 +93,12 @@ def run_all(verbose_level):
     verbose_level : int
         verbose level
     """
-    cases = [file.name for file in sorted(Path('cases/in').iterdir()) if file.is_file()]
+    cases = [file.name for file in sorted(
+        Path('cases/in').iterdir()) if file.is_file()]
     run_selected(cases, verbose_level)
 
 
-def run_selected(cases, verbose_level):
+def run_selected(cases: List[str], verbose_level: int) -> None:
     """
     Run selected cases.
 
@@ -127,8 +140,10 @@ else:
     run_selected(args.cases, args.verbose)
 
 # detect debug prints
-p1 = subprocess.Popen(['grep', 'debugln!', 'src/main.rs'], stdout=subprocess.PIPE)
-p2 = subprocess.Popen(['grep', '-v', '^ *//'], stdin = p1.stdout, stdout=subprocess.PIPE)
+p1 = subprocess.Popen(['grep', 'debugln!', 'src/main.rs'],
+                      stdout=subprocess.PIPE)
+p2 = subprocess.Popen(['grep', '-v', '^ *//'],
+                      stdin=p1.stdout, stdout=subprocess.PIPE)
 p1.stdout.close()
 output = p2.communicate()[0].decode()
 if output != "":
