@@ -7,6 +7,8 @@ if [ $# -ne 1 ]; then
   exit
 fi
 
+SCRIPT_DIR=$(dirname $0)
+
 DIR=$1
 mkdir $DIR
-cp -r template/{src,Cargo.toml,.gitignore} $DIR
+cp -r $SCRIPT_DIR/template/{src,Cargo.toml,.gitignore} $DIR
