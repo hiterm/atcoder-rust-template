@@ -10,5 +10,5 @@ fi
 SCRIPT_DIR=$(dirname $0)
 
 DIR=$1
-mkdir $DIR
+mkdir -p $DIR
 cp -r $SCRIPT_DIR/template/{src,Cargo.toml,.gitignore} $DIR

@@ -38,14 +38,17 @@ fn main() {
     };
 
     // 複数行ベクトル
-    let mut v: Vec<usize> = Vec::new();
-    for _ in 0..a {
-        let v_i = {
-            let mut s = String::new();
-            std::io::stdin().read_line(&mut s).unwrap();
-            let s = s.trim_right().to_owned();
-            s.parse().unwrap()
-        };
-        v.push(v_i)
-    }
+    let v: Vec<usize> = {
+        let mut v: Vec<usize> = Vec::new();
+        for _ in 0..a {
+            let v_i = {
+                let mut s = String::new();
+                std::io::stdin().read_line(&mut s).unwrap();
+                let s = s.trim_right().to_owned();
+                s.parse().unwrap()
+            };
+            v.push(v_i)
+        }
+        v
+    };
 }
