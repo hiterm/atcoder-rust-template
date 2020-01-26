@@ -24,12 +24,8 @@ def run_case(case: str, verbose_level: int) -> bool:
     accepted : bool
         whether accepted or not
     """
-    if re.match(r'.*\.txt', case):
-        infile_path = Path('cases/in') / case
-        outfile_path = Path('cases/out') / case
-    else:
-        infile_path = Path('cases/in') / (case + '.txt')
-        outfile_path = Path('cases/out') / (case + '.txt')
+    infile_path = Path('cases/in') / case
+    outfile_path = Path('cases/out') / case
 
     if not outfile_path.exists():
         print('{} not found.'.format(outfile_path))
@@ -40,20 +36,20 @@ def run_case(case: str, verbose_level: int) -> bool:
     try:
         if verbose_level == 0:
             result = subprocess.run(
-                ['rustup', 'run', '1.15.1', 'cargo', 'run'],
+                ['rustup', 'run', '1.15.1', 'cargo', 'run', '--release'],
                 stdin=infile, stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL, timeout=3
             )
         elif verbose_level == 1:
             result = subprocess.run(
-                ['rustup', 'run', '1.15.1', 'cargo', 'run'],
+                ['rustup', 'run', '1.15.1', 'cargo', 'run', '--release'],
                 stdin=infile, stdout=subprocess.PIPE, timeout=3
             )
         else:
             env = os.environ.copy()
             env["RUST_BACKTRACE"] = "1"
             result = subprocess.run(
-                ['rustup', 'run', '1.15.1', 'cargo', 'run'],
+                ['rustup', 'run', '1.15.1', 'cargo', 'run', '--release'],
                 stdin=infile, stdout=subprocess.PIPE, timeout=3, env=env
             )
         actual = result.stdout.decode().rstrip()
