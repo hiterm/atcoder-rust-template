@@ -1,5 +1,7 @@
+#[allow(unused_imports)]
 use std::io::Write;
 
+// {{{1
 #[allow(unused)]
 macro_rules! debug {
     ($($format:tt)*) => (write!(std::io::stderr(), $($format)*).unwrap());
@@ -9,46 +11,58 @@ macro_rules! debugln {
     ($($format:tt)*) => (writeln!(std::io::stderr(), $($format)*).unwrap());
 }
 
+
+macro_rules! input {
+    (source = $s:expr, $($r:tt)*) => {
+        let mut iter = $s.split_whitespace();
+        input_inner!{iter, $($r)*}
+    };
+    ($($r:tt)*) => {
+        let mut s = {
+            use std::io::Read;
+            let mut s = String::new();
+            std::io::stdin().read_to_string(&mut s).unwrap();
+            s
+        };
+        let mut iter = s.split_whitespace();
+        input_inner!{iter, $($r)*}
+    };
+}
+
+macro_rules! input_inner {
+    ($iter:expr) => {};
+    ($iter:expr, ) => {};
+
+    ($iter:expr, $var:ident : $t:tt $($r:tt)*) => {
+        let $var = read_value!($iter, $t);
+        input_inner!{$iter $($r)*}
+    };
+}
+
+macro_rules! read_value {
+    ($iter:expr, ( $($t:tt),* )) => {
+        ( $(read_value!($iter, $t)),* )
+    };
+
+    ($iter:expr, [ $t:tt ; $len:expr ]) => {
+        (0..$len).map(|_| read_value!($iter, $t)).collect::<Vec<_>>()
+    };
+
+    ($iter:expr, chars) => {
+        read_value!($iter, String).chars().collect::<Vec<char>>()
+    };
+
+    ($iter:expr, usize1) => {
+        read_value!($iter, usize) - 1
+    };
+
+    ($iter:expr, $t:ty) => {
+        $iter.next().unwrap().parse::<$t>().expect("Parse error")
+    };
+}
+// }}}
+
 fn main() {
-    // 1つの数字
-    let a: usize = {
-        let mut s = String::new();
-        std::io::stdin().read_line(&mut s).unwrap();
-        let s = s.trim_right().to_owned();
-        s.parse().unwrap()
-    };
-
-    // 複数数字
-    let (a, b): (usize, usize) = {
-        let mut s = String::new();
-        std::io::stdin().read_line(&mut s).unwrap();
-        let s = s.trim_right().to_owned();
-        let mut ws = s.split_whitespace();
-        let a = ws.next().unwrap().parse().unwrap();
-        let b = ws.next().unwrap().parse().unwrap();
-        (a, b)
-    };
-
-    // 1行ベクトル
-    let v: Vec<usize> = {
-        let mut s = String::new();
-        std::io::stdin().read_line(&mut s).unwrap();
-        let s = s.trim_right().to_owned();
-        s.split_whitespace().map(|x| x.parse().unwrap()).collect()
-    };
-
-    // 複数行ベクトル
-    let v: Vec<usize> = {
-        let mut v: Vec<usize> = Vec::new();
-        for _ in 0..a {
-            let v_i = {
-                let mut s = String::new();
-                std::io::stdin().read_line(&mut s).unwrap();
-                let s = s.trim_right().to_owned();
-                s.parse().unwrap()
-            };
-            v.push(v_i)
-        }
-        v
-    };
+    input! {
+    }
 }
