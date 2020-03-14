@@ -60,7 +60,6 @@ macro_rules! read_value {
         $iter.next().unwrap().parse::<$t>().expect("Parse error")
     };
 }
-// }}}
 
 fn main() {
     input! {
