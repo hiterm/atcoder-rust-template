@@ -145,7 +145,8 @@ p1 = subprocess.Popen(['grep', 'debugln!', 'src/bin/{}.rs'.format(args.problem)]
                       stdout=subprocess.PIPE)
 p2 = subprocess.Popen(['grep', '-v', '^ *//'],
                       stdin=p1.stdout, stdout=subprocess.PIPE)
-p1.stdout.close()
+if p1.stdout is not None:
+    p1.stdout.close()
 output = p2.communicate()[0].decode()
 if output != "":
     print()
