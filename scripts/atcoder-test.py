@@ -2,13 +2,12 @@
 
 from pathlib import Path
 import subprocess
-import re
 import argparse
 import os
 from typing import List
 
 
-def run_case(case: str, verbose_level: int) -> bool:
+def run_case(problem: str, case: str, options: argparse.Namespace) -> bool:
     """
     Run one case.
 
@@ -24,8 +23,8 @@ def run_case(case: str, verbose_level: int) -> bool:
     accepted : bool
         whether accepted or not
     """
-    infile_path = Path('cases/in') / case
-    outfile_path = Path('cases/out') / case
+    infile_path = Path('cases') / problem / 'in' / case
+    outfile_path = Path('cases') / problem / 'out' / case
 
     if not outfile_path.exists():
         print('{} not found.'.format(outfile_path))
@@ -33,23 +32,27 @@ def run_case(case: str, verbose_level: int) -> bool:
 
     # run case
     infile = infile_path.open()
+    command = ['rustup', 'run', '1.15.1', 'cargo', 'run', '--bin', problem]
+    if options.release:
+        command.append('--release')
+    verbose_level = options.verbose
     try:
         if verbose_level == 0:
             result = subprocess.run(
-                ['rustup', 'run', '1.15.1', 'cargo', 'run', '--release'],
+                command,
                 stdin=infile, stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL, timeout=3
             )
         elif verbose_level == 1:
             result = subprocess.run(
-                ['rustup', 'run', '1.15.1', 'cargo', 'run', '--release'],
+                command,
                 stdin=infile, stdout=subprocess.PIPE, timeout=3
             )
         else:
             env = os.environ.copy()
             env["RUST_BACKTRACE"] = "1"
             result = subprocess.run(
-                ['rustup', 'run', '1.15.1', 'cargo', 'run', '--release'],
+                command,
                 stdin=infile, stdout=subprocess.PIPE, timeout=3, env=env
             )
         actual = result.stdout.decode().rstrip()
@@ -80,7 +83,7 @@ def run_case(case: str, verbose_level: int) -> bool:
     return accepted
 
 
-def run_all(verbose_level: int) -> None:
+def run_all(problem: str, options: argparse.Namespace) -> None:
     """
     Run all cases.
 
@@ -90,11 +93,11 @@ def run_all(verbose_level: int) -> None:
         verbose level
     """
     cases = [file.name for file in sorted(
-        Path('cases/in').iterdir()) if file.is_file()]
-    run_selected(cases, verbose_level)
+        (Path('cases') / problem / 'in').iterdir()) if file.is_file()]
+    run_selected(problem, cases, options)
 
 
-def run_selected(cases: List[str], verbose_level: int) -> None:
+def run_selected(problem: str, cases: List[str], options: argparse.Namespace) -> None:
     """
     Run selected cases.
 
@@ -109,7 +112,7 @@ def run_selected(cases: List[str], verbose_level: int) -> None:
     ac_cases = []
     ng_cases = []
     for case in cases:
-        if run_case(case, verbose_level):
+        if run_case(problem, case, options):
             ac_cases.append(case)
         else:
             ng_cases.append(case)
@@ -126,17 +129,19 @@ def run_selected(cases: List[str], verbose_level: int) -> None:
 
 parser = argparse.ArgumentParser()
 
+parser.add_argument('problem')
 parser.add_argument('cases', nargs='*')
 parser.add_argument('--verbose', '-v', nargs='?', type=int, const=1, default=0)
+parser.add_argument('--release', action="store_true")
 args = parser.parse_args()
 
 if len(args.cases) == 0:
-    run_all(args.verbose)
+    run_all(args.problem, args)
 else:
-    run_selected(args.cases, args.verbose)
+    run_selected(args.problem, args.cases, args)
 
 # detect debug prints
-p1 = subprocess.Popen(['grep', 'debugln!', 'src/main.rs'],
+p1 = subprocess.Popen(['grep', 'debugln!', 'src/bin/{}.rs'.format(args.problem)],
                       stdout=subprocess.PIPE)
 p2 = subprocess.Popen(['grep', '-v', '^ *//'],
                       stdin=p1.stdout, stdout=subprocess.PIPE)
