@@ -26,5 +26,5 @@ if output != "":
     sys.exit()
 
 subprocess.run(
-    ['rustup', 'run', 'stable', 'cargo', 'atcoder', 'submit', '--bin', problem]
+    ['cargo', 'atcoder', 'submit', problem]
 )
