@@ -7,6 +7,7 @@ import sys
 parser = argparse.ArgumentParser()
 
 parser.add_argument('problem')
+parser.add_argument('--bin', action='store_true')
 args = parser.parse_args()
 
 problem = args.problem
@@ -25,6 +26,9 @@ if output != "":
     print(output)
     sys.exit()
 
+commands = ['cargo', 'atcoder', 'submit', problem]
+if args.bin:
+    commands.append('--bin')
 subprocess.run(
-    ['cargo', 'atcoder', 'submit', problem]
+    commands
 )
