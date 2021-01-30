@@ -9,6 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('problem')
 parser.add_argument('--bin', action='store_true')
 parser.add_argument('--force', action='store_true')
+parser.add_argument('--release', action='store_true')
 args = parser.parse_args()
 
 problem = args.problem
@@ -27,11 +28,13 @@ if output != "":
     print(output)
     sys.exit()
 
-commands = ['cargo', 'atcoder', 'submit', problem]
+commands = ['cargo', 'compete', 'submit', problem]
 if args.bin:
     commands.append('--bin')
 if args.force:
-    commands.append('--force')
+    commands.append('--no-test')
+if args.release:
+    commands.append('--release')
 subprocess.run(
     commands
 )
