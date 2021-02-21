@@ -28,6 +28,14 @@ if output != "":
     print(output)
     sys.exit()
 
+# detect todo comments
+output = subprocess.run(['grep', 'TODO', file], stdout=subprocess.PIPE).stdout.decode()
+if output != "":
+    print()
+    print("!!!!Please check TODO comments!!!!")
+    print(output)
+    sys.exit()
+
 commands = ['cargo', 'compete', 'submit', problem]
 if args.bin:
     commands.append('--bin')
